@@ -17,6 +17,9 @@ public class OrdersController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Create a new order
+    /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(OrderResponseDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -46,6 +49,9 @@ public class OrdersController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Get order by ID
+    /// </summary>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(OrderResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -61,6 +67,9 @@ public class OrdersController : ControllerBase
         return Ok(order);
     }
 
+    /// <summary>
+    /// Get all orders
+    /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(List<OrderResponseDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<OrderResponseDto>>> GetAllOrders()

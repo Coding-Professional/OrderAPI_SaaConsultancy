@@ -18,10 +18,14 @@ public class OrderService
 
     public async Task<OrderResponseDto> CreateOrderAsync(CreateOrderDto dto)
     {
+        // Calculate total before discount
         decimal total = dto.Items.Sum(item => item.Quantity * item.Price);
+
+        // Apply 10% discount if total > 500
         decimal discount = total > 500 ? total * 0.10m : 0;
         decimal finalTotal = total - discount;
 
+        // Create order entity
         var order = new Order
         {
             CustomerId = dto.CustomerId,
@@ -32,8 +36,10 @@ public class OrderService
             CreatedAt = DateTime.UtcNow
         };
 
+        // Create order items
         foreach (var itemDto in dto.Items)
         {
+            // Try to reserve stock (thread-safe operation)
             if (!_inventoryService.ReserveStock(itemDto.ProductId, itemDto.Quantity))
             {
                 throw new InvalidOperationException(
@@ -51,9 +57,11 @@ public class OrderService
             order.Items.Add(orderItem);
         }
 
+        // Save to database
         _context.Orders.Add(order);
         await _context.SaveChangesAsync();
 
+        // Map to response DTO (never expose entities)
         return MapToResponseDto(order);
     }
 
@@ -75,6 +83,7 @@ public class OrderService
         return orders.Select(MapToResponseDto).ToList();
     }
 
+    // Helper method to map entity to DTO
     private OrderResponseDto MapToResponseDto(Order order)
     {
         return new OrderResponseDto
