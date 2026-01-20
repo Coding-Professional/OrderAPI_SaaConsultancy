@@ -1,6 +1,0 @@
-@OrderApi_SaaConsultancy_HostAddress = http://localhost:5186
-
-GET {{OrderApi_SaaConsultancy_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
